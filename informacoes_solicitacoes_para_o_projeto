@@ -1,0 +1,48 @@
+--Floricultura_Flora - 
+
+Informações e Solicitações para a conclusão da atividade:
+/*
+Uma floricultura deseja informatizar suas operações. Inicialmente, deseja manter um cadastro de todos os seus clientes, mantendo informações como: RG, nome, sobrenome, telefone e endereço completo.
+
+Deseja também manter um cadastro contendo informações sobre os produtos que vende, tais como: nome do produto, tipo (flor, vaso, planta,...), preço e quantidade em estoque.
+
+Quando um cliente faz uma compra, a mesma é armazenada, mantendo informação sobre o cliente que fez a compra, a data da compra, número da nota fiscal, um código de identificação da transação, quantidade de cada produto e os produtos comprados.
+
+Atividades:
+
+1. Criar o MER para o exercício.
+
+2. Criar o DER. (Acho que é a planilha Excel).
+
+3. Elaborar as tabelas do banco (entidades). 
+
+4. Normalizar o modelo criado. (REVISAR OS CADASTROS PARA CRIAR O BANCO DE DADOS) 
+
+5. Criar o banco de dados usando SQL Server. 
+
+6. Criar as tabelas necessárias, com seus relacionamentos. (Dicionário de Dados???)
+
+7. Inserir dados de testes nas tabelas - 10 registros em cada uma.
+
+8. Verificar se os registros foram inseridos corretamente usando uma declaração SELECT * FROM para cada tabela.
+
+
+Exercício Modelagem + Criação de Banco de Dados: Parte 02
+
+Executar as consultas a seguir no banco de dados Floricultura_Flora:
+
+1. Exibir os nomes dos clientes e todos os produtos comprados por cada um.
+
+2. Exibir o nome, sobrenome e todos os produtos comprados pelo cliente de ID 01.
+
+3. Exibir o valor total das compras realizadas pelo cliente de ID 03.
+
+4. Retornar o valor total de todas as vendas realizadas pela floricultura.
+
+5. Mostrar o valor total das vendas de vasos da floricultura.
+
+6. Mostrar o valor total de venda de cada produto da loja.
+
+7. Informar o valor total de vendas de plantas em intervalo de datas (escolhio por você).
+
+*/
