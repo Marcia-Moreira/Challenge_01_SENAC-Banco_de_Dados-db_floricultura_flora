@@ -1,0 +1,411 @@
+--BANCO DE DADOS - FLORICULTURA FLORA
+
+--ATIVIDADE/OBJETIVO - CRIAR BANCO DE DADOS DE UMA FLORICULTURA - db_floricultura_flora
+--NOME DO ARQUIVO - db_floricultura_flora.sql
+--REALIZADO/ELABORADO - MARCIA MOREIRA
+--LINK GITHUB - https://github.com/Marcia-Moreira/Challenge_01_SENAC-Banco_de_Dados-db_floricultura_flora
+
+--REFERÊNCIAS: SQL Server / Modelagem de Banco de Dados / GitHub
+--DESAFIO - Curso SENAC Programador de Sistemas
+--PROFESSOR - Fábio dos Reis.
+--*Os dados inseridos nesse banco são fictícios.
+
+--//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+--ATIVIDADES PROPOSTAS:
+/*
+Uma floricultura deseja informatizar suas operações. Inicialmente, deseja manter um cadastro de todos os seus clientes, mantendo informações como: RG, nome, sobrenome, telefone e endereço completo.
+Deseja também manter um cadastro contendo informações sobre os produtos que vende, tais como: nome do produto, tipo (flor, vaso, planta,...), preço e quantidade em estoque.
+Quando um cliente faz uma compra, a mesma é armazenada, mantendo informação sobre o cliente que fez a compra, a data da compra, número da nota fiscal, um código de identificação da transação, quantidade de cada produto e os produtos comprados.
+
+Parte 01 - Atividades: Exercício Modelagem
+1. Criar o MER para o exercício. ok
+2. Criar o DER. (Acho que é a planilha Excel) ok
+3. Elaborar as tabelas do banco (entidades). ok
+4. Normalizar o modelo criado. (REVISAR OS CADASTROS PARA CRIAR O BANCO DE DADOS) ok
+5. Criar o banco de dados usando SQL Server. ok
+6. Criar as tabelas necessárias, com seus relacionamentos. (Dicionário de Dados???) ok
+7. Inserir dados de testes nas tabelas - 10 registros em cada uma. ok
+8. Verificar se os registros foram inseridos corretamente usando uma declaração SELECT * FROM para cada tabela. ok
+
+Parte 02 - Atividades:  Criação de Banco de Dados
+Executar as consultas a seguir no banco de dados Floricultura:
+1. Exibir os nomes dos clientes e todos os produtos comprados por cada um.
+2. Exibir o nome, sobrenome e todos os produtos comprados pelo cliente de ID 01.
+3. Exibir o valor total das compras realizadas pelo cliente de ID 03.
+4. Retornar o valor total de todas as vendas realizadas pela floricultura.
+5. Mostrar o valor total das vendas de vasos da floricultura.
+6. Mostrar o valor total de venda de cada produto da loja.
+7. Informar o valor total de vendas de plantas em intervalo de datas (escolhio por você).
+*/
+
+--01-///////////////////////////////////////////////////////////////////////////////////////////////////////////
+--Cria o Banco de Dados (Execute o comando inteiro até o GO):
+--"Nova Consulta" - abrir arquivo novo
+
+CREATE DATABASE db_floricultura_flora ON PRIMARY (
+NAME = db_floricultura_flora,
+FILENAME = 'C:\SQL\db_floricultura_flora.mdf',
+SIZE = 6MB,
+MAXSIZE = 15MB,
+FILEGROWTH = 10%
+)
+LOG ON (
+NAME = db_FloriculturaFlora_log,
+FILENAME = 'C:\SQL\db_floricultura_flora_log.ldf',
+SIZE = 1MB,
+FILEGROWTH = 1MB
+)
+GO
+
+--02-///////////////////////////////////////////////////////////////////////////////////////////////////////////
+--Para USAR o Banco de Dados criado anteriormente:
+
+USE db_floricultura_flora;
+
+--Observações Diversas:
+--Caso precise excluir alguma tabela criada com erro, usar este comando: DROP TABLE tbl_nomeDaTabela;
+
+--Para Criar BD tem que executar o comando acima completo até o GO.
+--*Atenção para incluir exatamente os códigos id_* gerado no seu programa - podem ser diferentes dos gerados no meu programa!
+
+--03.1-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--Criar Tabela Cliente:
+
+CREATE TABLE tbl_cliente(
+Id_Cliente SMALLINT IDENTITY(100,1) PRIMARY KEY,
+Nome_Cliente VARCHAR(25) NOT NULL,
+Sobrenome_Cliente VARCHAR(25) NOT NULL,
+Rg_Cliente VARCHAR(10) UNIQUE,
+Tel_Cliente VARCHAR(15) NOT NULL,
+Bairro_Cliente VARCHAR(20),
+CEP_Cliente VARCHAR(10),
+Rua_Cliente VARCHAR(30),
+);
+
+--Para conferir: OK
+SELECT * FROM tbl_cliente;
+
+--03.2-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--Inserir os Dados nas Colunas da Tabela Cliente:
+
+INSERT INTO tbl_cliente (Nome_Cliente, Sobrenome_Cliente, Rg_Cliente, Tel_Cliente, Bairro_Cliente, CEP_Cliente, Rua_Cliente)
+VALUES
+('Marcia', ' Moreira', '122877103', '11977219430', 'Vila Ipojuca', '05058020', 'Rua Camburiu'),
+('Anderson', 'Bento', '382889108', '11918721227', 'Vila Prudente', '01058310', 'Rua Alcantara'),
+('Daniele', 'da Silva', '122877102', '21969709430', 'Botafogo', '05058030', 'Rua Praia de Botafogo'),
+('Maria', 'Barbosa', '132887102', '21960009430', 'Lote XV', '25058030', 'Rua Romancista'),
+('Maria', 'dos Prazeres', '252887102', '21978109430', 'Saracuruna', '25058120', 'Rua Carlos Maia'),
+('Alexandre', 'Ubaldo', '182887101', '11978109230', 'Alto da Lapa', '05058220', 'Rua Padre Lindo'),
+('Marcelo', 'Madureira', '242887101', '11928809230', 'Alto da Lapa', '05058220', 'Rua Brasilia'),
+('Daniel', 'de Souza', '212887108', '11927721230', 'Ipiranga', '02058210', 'Rua Antonieta'),
+('Jessica', 'Oliveira', '332887109', '11922821230', 'Vila Madalena', '02058211', 'Rua Lucia'),
+('Hudson', 'Francelino', '122887109', '11912821237', 'Vila Mariana', '01058218', 'Rua Santa Cruz');
+
+--Para conferir: OK
+SELECT * FROM tbl_cliente;
+
+/* RESULTADO:
+100 Marcia Moreira 122877103 11977219430 Vila Ipojuca 05058020 Rua Camburiu
+101 Anderson Bento 382889108 11918721227 Vila Prudente 01058310 Rua Alcantara
+102 Daniele da Silva 122877102 21969709430 Botafogo 05058030 Rua Praia de Botafogo
+103 Maria Barbosa 132887102 21960009430 Lote XV 25058030 Rua Romancista
+104 Maria dos Prazeres 252887102 21978109430 Saracuruna 25058120 Rua Carlos Maia
+105 Alexandre Ubaldo 182887101 11978109230 Alto da Lapa 05058220 Rua Padre Lindo
+106 Marcelo Madureira 242887101 11928809230 Alto da Lapa 05058220 Rua Brasilia
+107 Daniel de Souza 212887108 11927721230 Ipiranga 02058210 Rua Antonieta
+108 Jessica Oliveira 332887109 11922821230 Vila Madalena 02058211 Rua Lucia
+109 Hudson Francelino 122887109 11912821237 Vila Mariana 01058218 Rua Santa Cruz
+*/
+
+--04.1-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--Criar Tabela Fornecedor:
+
+CREATE TABLE tbl_fornecedor (
+Id_Fornecedor SMALLINT IDENTITY(100,1) PRIMARY KEY,
+Nome_Fornecedor VARCHAR(35) NOT NULL,
+);
+
+--Para conferir: OK
+SELECT * FROM tbl_fornecedor;
+
+--04.2-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--Inserir os Dados nas Colunas da Tabela Fornecedor:
+
+INSERT INTO tbl_fornecedor(Nome_Fornecedor)
+VALUES
+('FloriBella-Flores'),
+('Vasos do Chico'),
+('Terraço de Terra'),
+('AJ-Jarninagem'),
+('Villas-Fertilizantes'),
+('Morangão Sementes');
+
+--Para conferir: OK
+SELECT * FROM tbl_fornecedor;
+
+/* RESULTADO:
+100 FloriBella-Flores
+101 Vasos do Chico
+102 Terraço de Terra
+103 AJ-Jarninagem
+104 Villas-Fertilizantes
+105 Morangão Sementes
+*/
+
+--05.1-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--Criar Tabela Produto:
+
+CREATE TABLE tbl_produto(
+Id_Produto SMALLINT IDENTITY(100,1) PRIMARY KEY,
+Nome_Produto VARCHAR(35) NOT NULL,
+Tipo_Produto VARCHAR(15) NOT NULL,
+Preco_Produto MONEY NOT NULL,
+Estoque_Produto SMALLINT NOT NULL,
+Id_Fornecedor SMALLINT NOT NULL, --ID Foreign Key
+CONSTRAINT cria FOREIGN KEY (Id_Fornecedor)
+REFERENCES tbl_fornecedor (Id_Fornecedor)
+);
+
+--Para conferir: OK
+SELECT * FROM tbl_produto;
+
+--05.2-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--Inserir os Dados nas Colunas da Tabela Produto:
+
+INSERT INTO tbl_produto(Nome_Produto, Tipo_Produto, Preco_Produto, Estoque_Produto, Id_Fornecedor)
+VALUES
+('Girassol', 'Flor', 35.00, 50, 100),
+('Vaso-Amarelo', 'Vaso', 15.00, 25, 101),
+('Buquê-Rosa', 'Flor', 25.00, 70, 100),
+('Buquê-Lírio', 'Flor', 35.00, 80, 100),
+('Semente-Morango', 'Semente', 60.00, 25, 105),
+('Semente-Abacate', 'Semente', 15.00, 25, 105),
+('Coroa-Margaridas', 'Flor', 199.00, 15, 100),
+('Dália', 'Flor', 55.50, 35, 100),
+('Fertilizante-PK', 'Fert', 15.00, 25, 104),
+('Buquê-Margarida', 'Flor', 60.00, 100, 100);
+
+--Para conferir: OK
+SELECT * FROM tbl_produto;
+
+/* RESULTADO:
+101 Girassol Flor 35,00 50 100
+102 Vaso-Amarelo Vaso 15,00 25 101
+103 Buquê-Rosa Flor 25,00 70 100
+104 Buquê-Lírio Flor 35,00 80 100
+105 Semente-Morango Semente 60,00 25 105
+106 Semente-Abacate Semente 15,00 25 105
+107 Coroa-Margaridas Flor 199,00 15 100
+108 Dália Flor 55,50 35 100
+109 Fertilizante-PK Fert 15,00 25 104
+110 Buquê-Margarida Flor 60,00 100 100
+*/
+
+--06.1-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--Criar Tabela Cliente_Produto:
+
+CREATE TABLE tbl_cliente_produto (
+Id_Cliente SMALLINT NOT NULL,
+Id_Produto SMALLINT NOT NULL,
+
+CONSTRAINT chave_composta PRIMARY KEY (Id_Cliente, Id_Produto),
+CONSTRAINT possui FOREIGN KEY (Id_Cliente)
+REFERENCES tbl_cliente(Id_Cliente) ON DELETE CASCADE,
+CONSTRAINT escreve FOREIGN KEY (Id_Produto)
+REFERENCES tbl_produto(Id_Produto) ON DELETE CASCADE,
+
+Cod_Transacao VARCHAR(64) NOT NULL,
+Data_Compra DATE NOT NULL,
+NF_Compra VARCHAR(15) NOT NULL,
+Quant_Produto VARCHAR(25) NOT NULL,
+);
+
+--Para conferir: OK
+SELECT * FROM tbl_cliente_produto;
+
+--06.2-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--Inserir os Dados nas Colunas da Tabela Cliente_Produto:
+
+INSERT INTO tbl_cliente_produto(Id_Cliente, Id_Produto, Cod_Transacao, Data_Compra, NF_Compra, Quant_Produto)
+VALUES
+(101, 110, '0123654987321654','2022/05/26', '000123', 2),
+(109, 101, '0123654987321655','2023/03/06', '000321', 15),
+(107, 109, '0123654987321656','2021/07/27', '000128', 4),
+(105, 102, '0123654987321657','2022/09/16', '000383', 2),
+(102, 108, '0123654987321658','2020/12/21', '000139', 1),
+(106, 103, '0123654987321659','2023/02/10', '000221', 3),
+(108, 107, '0123654987321660','2023/05/02', '000858', 1),
+(103, 104, '0123654987321661','2023/04/30', '000273', 1),
+(100, 106, '0123654987321661','2021/01/19', '000620', 6),
+(104, 105, '0123654987321663','2022/06/01', '000763', 7);
+
+--Para conferir: OK
+SELECT * FROM tbl_cliente_produto;
+
+/* RESULTADO:
+100 106 0123654987321661 2021-01-19 000620 6
+101 110 0123654987321654 2022-05-26 000123 2
+102 108 0123654987321658 2020-12-21 000139 1
+103 104 0123654987321661 2023-04-30 000273 1
+104 105 0123654987321663 2022-06-01 000763 7
+105 102 0123654987321657 2022-09-16 000383 2
+106 103 0123654987321659 2023-02-10 000221 3
+107 109 0123654987321656 2021-07-27 000128 4
+108 107 0123654987321660 2023-05-02 000858 1
+109 101 0123654987321655 2023-03-06 000321 15
+*/
+
+--07-///////////////////////////////////////////////////////////////////////////////////////////////////////////
+--Executar as consultas a seguir no banco de dados Floricultura:
+
+--Conferência total de Tabelas:
+--*Ao selecionar todas as linhas abaixo e executar de uma única vez, poderá ver todas as tabelas geradas e seus dados:
+
+SELECT * FROM tbl_cliente;
+SELECT * FROM tbl_fornecedor;
+SELECT * FROM tbl_produto;
+SELECT * FROM tbl_cliente_produto;
+
+--07.1-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--1. Exibir os nomes dos clientes e todos os produtos comprados por cada um. OK
+
+SELECT tbl_cliente.Nome_Cliente, tbl_produto.Nome_Produto, tbl_produto.Preco_Produto, tbl_cliente_produto.Quant_Produto
+FROM tbl_cliente_produto
+INNER JOIN tbl_cliente
+ON tbl_cliente.Id_Cliente = tbl_cliente_produto.Id_Cliente
+INNER JOIN tbl_produto
+ON tbl_produto.Id_Produto = tbl_cliente_produto.Id_Produto;
+
+--RESPOSTA:
+/*
+Marcia Semente-Abacate 15,00 6
+Anderson Buquê-Margarida 60,00 2
+Daniele Dália 55,50 1
+Maria Buquê-Lírio 35,00 1
+Maria Semente-Morango 60,00 7
+Alexandre Vaso-Amarelo 15,00 2
+Marcelo Buquê-Rosa 25,00 3
+Daniel Fertilizante-PK 15,00 4
+Jessica Coroa-Margaridas 199,00 1
+Hudson Girassol 35,00 15
+*/
+
+--07.2-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--2. Exibir o nome, sobrenome e todos os produtos comprados pelo cliente de ID 01. OK
+
+SELECT tbl_cliente.Nome_Cliente, tbl_cliente.Sobrenome_Cliente,tbl_cliente_produto.Quant_Produto, tbl_produto.Nome_Produto, tbl_produto.Preco_Produto
+FROM tbl_cliente_produto
+INNER JOIN tbl_cliente
+ON tbl_cliente.Id_Cliente = tbl_cliente_produto.Id_Cliente
+INNER JOIN tbl_produto
+ON tbl_produto.Id_Produto = tbl_cliente_produto.Id_Produto
+WHERE tbl_cliente.Id_Cliente = 100;
+
+--RESPOSTA:
+/*
+Marcia Moreira 6 Semente-Abacate 15,00
+*/
+
+--07.3-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--3. Exibir o valor total das compras realizadas pelo cliente de ID 03. OK
+
+SELECT SUM(tbl_produto.Preco_Produto * tbl_cliente_produto.Quant_Produto) AS Valor_Total
+FROM tbl_cliente_produto
+INNER JOIN tbl_cliente
+ON tbl_cliente.Id_Cliente = tbl_cliente_produto.Id_Cliente
+INNER JOIN tbl_produto
+ON tbl_produto.Id_Produto = tbl_cliente_produto.Id_Produto
+WHERE tbl_cliente.Id_Cliente = 103;
+
+--RESPOSTA:
+/*
+35,00
+*/
+
+--07.4-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--4. Retornar o valor total de todas as vendas realizadas pela floricultura. OK
+
+SELECT SUM (tbl_produto.Preco_Produto * tbl_cliente_produto.Quant_Produto) AS Total_Vendas
+FROM tbl_cliente_produto
+INNER JOIN tbl_cliente
+ON tbl_cliente.Id_Cliente = tbl_cliente_produto.Id_Cliente
+INNER JOIN tbl_produto
+ON tbl_produto.Id_Produto = tbl_cliente_produto.Id_Produto
+
+--RESPOSTA:
+/*
+1609,50
+*/
+
+--07.5-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--5. Mostrar o valor total das vendas de vasos da floricultura. OK
+
+SELECT SUM (tbl_produto.Preco_Produto * tbl_cliente_produto.Quant_Produto) AS Total_Vendas_Vasos
+FROM tbl_cliente_produto
+INNER JOIN tbl_cliente
+ON tbl_cliente.Id_Cliente = tbl_cliente_produto.Id_Cliente
+INNER JOIN tbl_produto
+ON tbl_produto.Id_Produto = tbl_cliente_produto.Id_Produto
+WHERE tbl_cliente_produto.Id_Produto = 102;
+
+--07.6-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--6. Mostrar o valor total de venda de cada produto da loja. OK
+
+SELECT tbl_produto.Nome_Produto, tbl_produto.Preco_Produto * tbl_cliente_produto.Quant_Produto AS Total_por_Produto
+FROM tbl_cliente_produto
+INNER JOIN tbl_cliente
+ON tbl_cliente.Id_Cliente = tbl_cliente_produto.Id_Cliente
+INNER JOIN tbl_produto
+ON tbl_produto.Id_Produto = tbl_cliente_produto.Id_Produto;
+
+--RESPOSTA:
+/*
+Semente-Abacate 90,00
+Buquê-Margarida 120,00
+Dália 55,50
+Buquê-Lírio 35,00
+Semente-Morango 420,00
+Vaso-Amarelo 30,00
+Buquê-Rosa 75,00
+Fertilizante-PK 60,00
+Coroa-Margaridas 199,00
+Girassol 525,00
+*/
+
+--07.7-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+--7. Informar o valor total de vendas de plantas em intervalo de datas (escolhio por você). OK
+
+SELECT SUM (tbl_produto.Preco_Produto * tbl_cliente_produto.Quant_Produto) AS Total_Vendas_Período
+FROM tbl_cliente_produto
+INNER JOIN tbl_cliente
+ON tbl_cliente.Id_Cliente = tbl_cliente_produto.Id_Cliente
+INNER JOIN tbl_produto
+ON tbl_produto.Id_Produto = tbl_cliente_produto.Id_Produto
+
+WHERE tbl_cliente_produto.Data_Compra > '2020-01-01' AND tbl_cliente_produto.Data_Compra < '2022-05-30';
+
+--RESPOSTA:
+/*
+325,50
+*/
+
+--BKP-///////////////////////////////////////////////////////////////////////////////////////////////////////////
+--BACKUP do Banco de Dados:
+
+BACKUP DATABASE db_floricultura_flora
+TO DISK ='C:\SQL\BACKUP_MM\db_floricultura_flora.bak';
+GO
+
+/*Processadas 456 páginas para o banco de dados 'db_floricultura_flora', arquivo 'db_floricultura_flora' no arquivo 1.
+Processadas 1 páginas para o banco de dados 'db_floricultura_flora', arquivo 'db_FloriculturaFlora_log' no arquivo 1.
+BACKUP DATABASE processou com êxito 457 páginas em 0.067 segundos (53.193 MB/s).
+
+Horário de conclusão: 2023-07-13T02:46:18.5512502-03:00
+*/
+
+--RESTORE DATABASE db_floricultura_flora
+--FROM DISK ='C:\SQL\BACKUP_MM\db_floricultura_flora.bak';
+--WITH REPLACE
+
+--FIM-/////////////////////////////////////////////////////////////////////////////////////////////////////////
